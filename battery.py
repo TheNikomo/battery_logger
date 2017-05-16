@@ -1,13 +1,8 @@
 #!/usr/bin/python
 import os
 
-os.chdir("/sys/devices/platform/smapi/BAT0/")
-objects = sorted(os.listdir())
-for object in objects:
-    with open(object) as f:
-        try:
-            content = f.read()
-        except OSError:
-            content = "Not supported\n"
-
-    print("{}: {}".format(object, content), end='')
+if __name__ == "__main__":
+    if os.path.isdir('/sys/devices/platform/smapi'):
+        print("tp_smapi sysfs found")
+    else:
+        quit("tp_smapi sysfs not found - maybe not installed?")
