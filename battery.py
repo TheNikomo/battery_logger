@@ -6,12 +6,25 @@ import os
 
 class Battery(object):
     """
-    Battery object, stores path to sysfs
-    device and properties about the device
-    NYI: The properties
+    Battery object
+    Stores path to sysfs device
+    and returns properties
+    about the device
     """
+
     def __init__(self, path):
         self.path = path
+
+    def properties(self):
+        property_dict = {}
+        os.chdir(self.path)
+        for property in os.listdir():
+            try:
+                property_dict[property] = open(
+                    os.path.abspath(property)).read().rstrip()
+            except OSError:
+                property_dict[property] = None
+        return property_dict
 
 if __name__ == "__main__":
     # Check that we actually have tp_smapi before doing anything
