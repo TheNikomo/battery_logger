@@ -41,3 +41,8 @@ if __name__ == "__main__":
     batteries = []
     for battery_device in glob.glob('/sys/devices/platform/smapi/BAT*'):
         batteries.append(Battery(os.path.abspath(battery_device)))
+
+    # Remove untracked batteries from the list
+    for battery in batteries:
+        if battery.name not in config["general"]["tracked"]:
+            batteries.remove(battery)
