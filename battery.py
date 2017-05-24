@@ -17,8 +17,7 @@ class Battery(object):
 
     def properties(self):
         property_dict = {}
-        os.chdir(self.path)
-        for property in os.listdir():
+        for property in os.listdir(self.path):
             try:
                 property_dict[property] = open(
                     os.path.abspath(property)).read().rstrip()
@@ -30,7 +29,6 @@ if __name__ == "__main__":
     # Check that we actually have tp_smapi before doing anything
     if os.path.isdir('/sys/devices/platform/smapi'):
         print('tp_smapi sysfs found')
-        os.chdir('/sys/devices/platform/smapi')
     else:
         quit('tp_smapi sysfs not found - maybe not installed?')
 
@@ -40,5 +38,5 @@ if __name__ == "__main__":
 
     # Get the batteries we have in the system
     batteries = []
-    for battery_device in glob.glob('BAT*'):
+    for battery_device in glob.glob('/sys/devices/platform/smapi/BAT*'):
         batteries.append(Battery(os.path.abspath(battery_device)))
