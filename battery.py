@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 import configparser
+import csv
+import datetime
 import glob
 import os
+import time
 
 
 class Battery(object):
@@ -24,7 +27,14 @@ class Battery(object):
                     self.path + property).read().rstrip()
             except OSError:
                 property_dict[property] = None
+        property_dict["timestamp"] = datetime.datetime.now()
         return property_dict
+
+    def fieldnames(self):
+        fieldnames_list = ["timestamp"]
+        for field in os.listdir(self.path):
+            fieldnames_list.append(field)
+        return fieldnames_list
 
 if __name__ == "__main__":
     # Check that we actually have tp_smapi before doing anything
@@ -46,3 +56,12 @@ if __name__ == "__main__":
     for battery in batteries:
         if battery.name not in config["general"]["tracked"]:
             batteries.remove(battery)
+
+    for battery in batteries:
+        with open(battery.name + '.csv', 'w', newline='') as csvfile:
+            datalogger = csv.DictWriter(
+                csvfile, fieldnames=battery.fieldnames())
+            datalogger.writeheader()
+            while True:
+                datalogger.writerow(battery.properties())
+                time.sleep(1)
