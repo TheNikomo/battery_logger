@@ -24,7 +24,7 @@ class Battery(object):
         for property in os.listdir(self.path):
             try:
                 property_dict[property] = open(
-                    self.path + property).read().rstrip()
+                    self.path + property).read().replace('\n', '')
             except OSError:
                 property_dict[property] = None
         property_dict["timestamp"] = datetime.datetime.now()
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     for battery in batteries:
         with open(battery.name + '.csv', 'w', newline='') as csvfile:
             datalogger = csv.DictWriter(
-                csvfile, fieldnames=battery.fieldnames())
+                csvfile, fieldnames=battery.fieldnames(), dialect='excel')
             datalogger.writeheader()
             while True:
                 datalogger.writerow(battery.properties())
